@@ -1,0 +1,12 @@
+[submodule "service-registry-reserva"]
+	path = service-registry-reserva
+	url = https://github.com/claudiovdev/service-registry-reserva.git
+[submodule "api-usuario-reserva"]
+	path = api-usuario-reserva
+	url = https://github.com/claudiovdev/api-usuario-reserva.git
+[submodule "api-reserva"]
+	path = api-reserva
+	url = https://github.com/claudiovdev/api-reserva.git
+[submodule "gateway-reserva"]
+	path = gateway-reserva
+	url = https://github.com/claudiovdev/gateway-reserva.git
