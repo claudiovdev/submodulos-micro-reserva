@@ -1,0 +1,10 @@
+ $env:EUREKA_CLIENT_USERNAME="serviceregistry"; $env:EUREKA_CLIENT_PASSWORD="ead123sr"; docker-compose -f cliente-docker-compose.yml up -d --force-recreate
+
+-- comando para finalizar os containers 
+docker rm $(docker ps -a -q) --force
+
+-- comando para deletar as imagens
+docker rmi $(docker images -q) --force
+
+-- comando para limpar cach ou qualquer imagem que possa ter ficado guardada
+docker system prune -a

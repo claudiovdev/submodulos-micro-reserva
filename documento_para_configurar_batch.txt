@@ -1,0 +1,19 @@
+@echo off
+
+rem Defina o caminho da pasta onde o arquivo docker-compose.yml está localizado
+
+-- Definir aqui o caminho onde está o diretorio
+set caminho=C:\caminho\para\o\diretório\do\arquivo
+
+rem Navegue para o diretório do arquivo docker-compose.yml
+cd /d "%caminho%"
+
+rem Defina as variáveis de ambiente
+set "EUREKA_CLIENT_USERNAME=serviceregistry"
+set "EUREKA_CLIENT_PASSWORD=ead123sr"
+
+rem Execute o comando docker-compose up
+docker-compose -f cliente-docker-compose.yml up -d --force-recreate
+
+pause
+

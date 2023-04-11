@@ -1,0 +1,96 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - clientes-compose-network
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: vinicius@123
+      MYSQL_DATABASE: clientes_db
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    networks:
+      - clientes-compose-network
+    links:
+      - db
+    ports:
+      - 8000:80
+
+  api-service-registry:
+    build:
+      context: ./SERVICE-REGISTRY/service-registry
+      dockerfile: Dockerfile
+    image: vinicius/service-registry:1.0
+    networks:
+      - clientes-compose-network
+
+    ports:
+      - 8761:8761
+
+  api-gateway:
+    build:
+      context: ./API-GATEWAY/reserva-gateway
+      dockerfile: Dockerfile
+    image: vinicius10/gateway:1.0
+    links:
+      - api-service-registry
+    networks:
+      - clientes-compose-network
+    depends_on:
+      - api-service-registry
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_CLIENT_USERNAME}:${EUREKA_CLIENT_PASSWORD}@api-service-registry:8761/eureka
+
+    ports:
+      - 8090:8080
+
+  api-usuario:
+    build:
+      context: ./API-USUARIO/usuario
+      dockerfile: Dockerfile
+    image: vinicius10/usuario:1.0
+    links:
+      - db
+      - api-service-registry
+    networks:
+      - clientes-compose-network
+    depends_on:
+      - db
+      - api-service-registry
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_CLIENT_USERNAME}:${EUREKA_CLIENT_PASSWORD}@api-service-registry:8761/eureka
+
+    ports:
+      - 8082:8080
+
+  api-reserva:
+    build:
+      context: ./API-RESERVA/reserva
+      dockerfile: Dockerfile
+    image: vinicius10/reserva:1.0
+    links:
+      - db
+      - api-service-registry
+    networks:
+      - clientes-compose-network
+    depends_on:
+      - db
+      - api-service-registry
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://${EUREKA_CLIENT_USERNAME}:${EUREKA_CLIENT_PASSWORD}@api-service-registry:8761/eureka
+
+    ports:
+      - 8083:8080
+
+volumes:
+  dbdata:
+
+networks:
+  clientes-compose-network:
+    driver: bridge
